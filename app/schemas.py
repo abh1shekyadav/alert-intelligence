@@ -1,12 +1,15 @@
 from pydantic import BaseModel
 from datetime import datetime
 
-class AlertCreate(BaseModel):
+class AlertBase(BaseModel):
     source: str
     message: str
     severity: str
 
-class AlertRead(AlertCreate):
+class AlertCreate(AlertBase):
+    pass
+
+class AlertResponse(AlertBase):
     id: int
     created_at: datetime
 

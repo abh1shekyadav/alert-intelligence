@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from app.database import SessionLocal
 from app import models, schemas
 
-router = APIRouter()
+router = APIRouter(prefix="/alerts", tags=["alerts"])
 
 def get_db():
     db = SessionLocal()
@@ -12,7 +12,7 @@ def get_db():
     finally:
         db.close()
 
-@router.post("/alerts")
+@router.post("/", response_model=schemas.AlertResponse)
 def create_alert(alert: schemas.AlertCreate, db: Session = Depends(get_db)):
     new_alert = models.Alert(**alert.dict())
     db.add(new_alert)
@@ -20,7 +20,6 @@ def create_alert(alert: schemas.AlertCreate, db: Session = Depends(get_db)):
     db.refresh(new_alert)
     return new_alert
 
-@router.get("/alerts")
+@router.get("/", response_model=list[schemas.AlertResponse])
 def get_alerts(db: Session = Depends(get_db)):
-    alerts = db.query(models.Alert).all()
-    return alerts
+    return db.query(models.Alert).all()
