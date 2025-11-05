@@ -1,0 +1,35 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: alert-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: alert_user
+      POSTGRES_PASSWORD: alert_password
+      POSTGRES_DB: alertdb
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - alert_network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: alert-pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@alert.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    networks:
+      - alert_network
+
+volumes:
+  postgres_data:
+
+networks:
+  alert_network:
