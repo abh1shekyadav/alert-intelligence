@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.routes import alerts
+from app.routes import alerts, enriched_alerts
 from app.database import Base, engine
 
 Base.metadata.create_all(bind=engine)
@@ -7,6 +7,7 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI(title="Alert Intelligence")
 
 app.include_router(alerts.router)
+app.include_router(enriched_alerts.router)
 
 @app.get("/")
 def root():

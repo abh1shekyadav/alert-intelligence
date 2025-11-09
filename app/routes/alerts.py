@@ -35,3 +35,10 @@ def get_alert(alert_id: int, db: Session = Depends(get_db)):
     if not alert:
         raise HTTPException(status_code=404, detail="Alert not found")
     return alert
+
+@router.post("/", response_model=schemas.AlertResponse)
+def create_alert(alert: schemas.AlertCreate, db: Session = Depends(get_db)):
+    new_alert = crud.create_alert(db=db, alert=alert)
+    # Trigger enrichment pipeline
+    crud.enrich_and_store_alert(db, new_alert)
+    return new_alert
